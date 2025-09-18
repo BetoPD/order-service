@@ -19,6 +19,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Getter
 @Setter
@@ -38,5 +39,6 @@ public class Order {
     private LocalDateTime updatedAt;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "order_id")
+    @JsonManagedReference
     private List<OrderDetails> orderDetails = new ArrayList<>();
 }

@@ -25,19 +25,19 @@ public class OrderService {
     ProductFeignClient productFeignClient;
 
     public Order createOrder(List<OrderDetails> orderDetails) {
-        // Create and save order first to get generated ID
         Order order = new Order();
         Order savedOrder = orderRepository.save(order);
 
-        // Now set the orderId in each order detail and save them
         orderDetails.forEach(detail -> {
-            detail.setOrderId(savedOrder.getId());
+            detail.setOrder(savedOrder);
         });
 
-        // Save the order details to database
+        orderDetails.forEach(detail -> {
+            productFeignClient.updateStock(detail.getProductId(), detail.getQuantity());
+        });
+
         List<OrderDetails> savedOrderDetails = orderDetailsRepository.saveAll(orderDetails);
 
-        // Set the saved order details back to the order
         savedOrder.setOrderDetails(savedOrderDetails);
 
         return savedOrder;
